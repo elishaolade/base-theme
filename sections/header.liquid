@@ -1,0 +1,32 @@
+<header class="header">
+    <div class="header__inner container">
+        <div class="header__element">
+            {% if section.settings.logo %}
+                <img class="header__logo" src="{{ section.settings.logo | img_url: 'master' }}"/>
+            {% endif %} 
+        </div>
+        <div class="header__element">
+            <a href="#" class="header__link">home</a>
+            <a href="#" class="header__link">about us</a>
+            <a href="#" class="header__link">stories</a>
+            <a href="#" class="header__link">press</a>
+        </div>
+        <div class="header__element">
+            <button type="button" class="header__btn">{% render 'search-icon' %}</button>
+            <button type="button" class="header__btn">{% render 'cart-icon' %}</button>
+            <button type="button" class="header__btn hamburger">{% render 'list-icon' %}</button>
+        </div>
+    </div>
+</header>
+{% schema %}
+{
+    "name":"Header",
+    "settings": [
+        {
+            "type":"image_picker",
+            "id":"logo",
+            "label":"Logo"
+        }
+    ]
+}
+{% endschema %}

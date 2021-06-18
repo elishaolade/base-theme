@@ -1,0 +1,30 @@
+<div class="page-width">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-end">Hey</div>
+        </div>
+    </div>
+</div>
+{% schema %}
+{
+    "settings":[
+        {
+            "type":"select",
+            "id":"align",
+            "label":"Align content",
+            "default":"left",
+            "options":[
+                {"value":"left", "label":"Left"},
+                {"value":"center", "label":"Center"},
+                {"value":"right", "label":"Right"}
+            ]
+        }
+    ],
+    "presets":[
+        {
+            "name":"Collection Row",
+            "category":"collection"
+        }
+    ]
+}
+{% endschema %}

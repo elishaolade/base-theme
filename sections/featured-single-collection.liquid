@@ -1,0 +1,127 @@
+{% assign image = section.settings.image %}
+{%- if section.settings.image.aspect_ratio == blank -%}
+    {%- assign min_aspect_ratio = 2.0 -%}
+{%- else -%}
+    {%- assign min_aspect_ratio = section.settings.image.aspect_ratio -%}
+{%- endif -%}
+{%- assign wrapper_height = 100 | divided_by: min_aspect_ratio -%}
+{%- style -%}
+.featured-single-collection-{{ section.id }} {
+    height: {{- wrapper_height -}}vw !important;
+    background-image: url('{{ section.settings.image | img_url: '2048x' }}');
+}
+.featured-single-collection__overlay::before {
+    opacity: {{ section.settings.opacity }};
+}
+.featured-single-collection__content {
+    color: {{ section.settings.text_color }};
+}
+{%- endstyle -%}
+<div class="featured-single-collection featured-single-collection-{{ section.id }} container-fluid featured-single-collection__overlay">
+     <div class="featured-single-collection__inner">
+        <div class="featured-single-collection__content">
+            <h1 class="mega-title mega-title--{{ section.settings.headline_size }} featured-single-collection__headline fw-{{section.settings.headline_weight}}">{{ section.settings.heading }}</h1>
+            {% if section.settings.button_link and section.settings.button_label %}
+                <a href="{{ section.settings.button_link }}"
+                    class="btn featured-single-collection__btn"
+                    aria-label="{{ ariaLabel }}">
+                    {{- section.settings.button_label | escape -}}
+                </a>
+            {% endif %}
+        </div>
+     </div>
+</div>
+{% schema %}
+{
+    "name":"Featured Single Column",
+    "settings":[
+        {
+            "type":"image_picker",
+            "id":"image",
+            "label":"Background image"
+        },
+        {
+            "type":"text",
+            "id":"heading",
+            "label":"Heading",
+            "default":"Timeless pieces"
+        },
+        {
+            "type":"select",
+            "id":"headline_weight",
+            "label":"Font weight for headline",
+            "options":[
+                {
+                    "value": "bold",
+                    "label": "Bold"
+                },
+                {
+                    "value":"bolder",
+                    "label":"Semi-bold"
+                },
+                {
+                    "value":"normal",
+                    "label":"Normal"
+                },
+                {
+                    "value":"light",
+                    "label":"Light"
+                },
+                {
+                    "value":"lighter",
+                    "label":"Lighter"
+                }
+            ],
+            "default":"normal"
+        },
+        {
+            "type":"select",
+            "id":"headline_size",
+            "label":"Text size for headline",
+            "options":[
+                {
+                    "value": "medium",
+                    "label": "Medium"
+                },
+                {
+                    "value":"large",
+                    "label":"Large"
+                }
+            ],
+            "default":"medium"
+        },
+        {
+            "type":"url",
+            "id":"button_link",
+            "label":"Button Link"
+        },
+        {
+            "type":"text",
+            "id":"button_label",
+            "label":"Button Label",
+            "default":"shop now"
+        },
+        {
+            "type":"range",
+            "id":"opacity",
+            "min":0,
+            "max":1,
+            "step":0.1,
+            "default":0.5,
+            "label":"Opacity"
+        },
+        {
+            "type":"color",
+            "id":"text_color",
+            "label":"Text color",
+            "default":"#000"
+        }
+    ],
+    "presets":[
+        {
+            "name":"Featured Single Column",
+            "category":"collection"
+        }
+    ]
+}
+{% endschema %}

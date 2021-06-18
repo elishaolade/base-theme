@@ -1,0 +1,129 @@
+{% capture alignment %}{% endcapture %}
+{% case section.settings.alignment %}
+    {% when 'center'%}
+        {% capture alignment %}featured-text--center{% endcapture %}
+    {% when 'space-between' %}
+        {% capture alignment %}featured-text--spaced{% endcapture %}
+    {% else %}
+        {% capture alignment %}featured-text--block{% endcapture%}
+{% endcase %}
+{% style %}
+    .featured-text__head {
+        max-width: {{ section.settings.heading_max_width }};
+    }
+    .featured-text__content {
+        max-width: {{ section.settings.subheading_max_width }};
+    }
+{% endstyle %}
+<div class="page-width featured-text">
+    <div class="container">
+        <div class="featured-text__inner row">
+            {% if section.settings.heading and section.settings.text %}
+                <div class="featured-text__col col-md-6">
+                    <h5 class="featured-text__heading fw-light">{{ section.settings.heading }}</h5>
+                </div>
+                <div class="featured-text__col justify-content-md-end col-md-6">
+                     {{ section.settings.text }}
+                    {% if section.settings.link_url and section.settings.link_text %}
+                        <div class="mt-2">
+                            <a href="{{ section.settings.link_url }}" class="featured-text__link link underline">{{ section.settings.link_text }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% else %}
+                {% if section.settings.heading %}
+                    <div class="featured-text__col col-md-12">
+                        <h5 class="featured-text__heading">{{ section.settings.heading }}</h5>
+                    </div>
+                {% else %}
+                    <h5 class="featured-text__text">{{ section.settings.text }}</h5>
+                    {% if section.settings.link_url and section.settings.link_text %}
+                        <a href="{{ section.settings.link_url }}" class="featured-text__link link underline">{{ section.settings.link_text }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% comment %} <div class="page-width featured-text">
+    {% capture single_layout %}{% endcapture %}
+    <div class="featured-text__inner {{ alignment }}">
+        <div class="featured-text__head">
+            <h2 class="featured-text__heading {% if section.settings.text == blank %} text-center {% endif %}">{{ section.settings.heading }}</h2>
+        </div>
+        {% if section.settings.text %}
+        <div class="featured-text__content">
+            <h5 class="featured-text__text">{{ section.settings.text }}</h5>
+            {% if section.settings.link_url and section.settings.link_text %}
+                <a href="{{ section.settings.link_url }}" class="featured-text__link link underline">{{ section.settings.link_text }}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div> {% endcomment %}
+{% schema %}
+{
+    "name":"Featured Text",
+    "settings":[
+        {
+            "type":"select",
+            "id":"alignment",
+            "label":"Alignment",
+            "options":[
+                { "value": "left", "label":"Left" },
+                { "value": "center", "label": "Center" },
+                { "value": "space-between", "label": "Space between" }
+            ],
+            "default": "center"
+        },
+        {
+            "type":"text",
+            "id":"heading",
+            "label":"Heading",
+            "default":"Heading"
+        },
+        {
+            "type":"range",
+            "id":"heading_max_width",
+            "label":"Heading max width",
+            "min":400,
+            "max":1000,
+            "unit":"px",
+            "step":25,
+            "default":400
+        },
+        {
+            "type":"richtext",
+            "id":"text",
+            "label":"Text",
+            "default":"<p>Lorem ipsum</p>"
+        },
+        {
+            "type":"range",
+            "id":"subheading_max_width",
+            "label":"Subheading max width",
+            "min":400,
+            "max":1000,
+            "unit":"px",
+            "step":25,
+            "default":400
+        },
+        {
+            "type":"text",
+            "id":"link_text",
+            "label":"Link text"
+        },
+        {
+            "type":"url",
+            "id":"link_url",
+            "label":"Link url"
+        }
+    ],
+    "presets":[
+        {
+            "name":"Featured Text",
+            "category":"Text"
+        }
+    ]
+}
+{% endschema %}

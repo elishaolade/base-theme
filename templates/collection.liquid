@@ -1,0 +1,37 @@
+<div class="collection-page">
+  <div class="collection-page__inner">
+    <div class="collection-page__head">
+      <div class="page-width">
+        <h1 class="collection-page__title">{{ collection.title }}</h1>
+      </div>
+    </div>
+    <div class="collection-page__body">
+      <div class="collection-page__filter">
+        <div class="page-width">
+          <div class="filters-toolbar">
+            <div class="filters-toolbar__item-wrapper">
+              <div class="filters-toolbar__element">
+                {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+                <label class="filters-toolbar__label select-label" for="SortBy">Sort by</label>
+                <div class="filters-toolbar__input-wrapper select-group">
+                    <select name="sort_by" id="SortBy"
+                      class="filters-toolbar__input"
+                      aria-describedby="a11y-refresh-page-message a11y-selection-message"
+                      data-default-sortby="{{ collection.default_sort_by }}"
+                      data-select-input>
+                      {%- for option in collection.sort_options -%}
+                        <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>{{ option.name }}</option>
+                      {%- endfor -%}
+                    </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-width">
+        {% section 'collection-template' %}
+      </div>
+    </div>
+  </div>
+</div>

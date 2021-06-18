@@ -1,0 +1,53 @@
+<div class="collection-page">
+  <div class="collection-page__inner">
+    <div class="collection-page__head">
+      <div class="page-width">
+        <h1 class="collection-page__title">{{ collection.title }}</h1>
+      </div>
+    </div>
+    <div class="collection-page__body">
+      <div class="collection-page__filter">
+        <div class="page-width">
+          <div class="filters-toolbar">
+            <div class="filters-toolbar__item-wrapper">
+              <div class="filters-toolbar__element">
+                <label class="filters-toolbar__label select-label" for="SortBy">Sort by</label>
+                <div class="filters-toolbar__input-wrapper select-group">
+                    <select name="sort_by" id="SortBy"
+                      class="filters-toolbar__input"
+                      aria-describedby="a11y-refresh-page-message a11y-selection-message"
+                      data-default-sortby="{{ collection.default_sort_by }}"
+                      data-select-input>
+                      {%- for option in collection.sort_options -%}
+                        <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>{{ option.name }}</option>
+                      {%- endfor -%}
+                    </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-width">
+        <div class="collection-page__grid row collection">
+          {% assign sorted_collection = collection.sort_by %}
+          {% for product in collection.products %}
+            <div class="collection-page__grid-item col-6 col-md-4 col-lg-4">
+              <div class="product">
+                <div class="product__img-wrapper">
+                  <a href="{{ product.url }}" class="product__link">
+                    <img src="{{ product.featured_image | img_url: '500x'}}" class="product__featured-img" />
+                  </a>
+                </div>
+                <div class="product__details-wrapper">
+                  <div>{{ product.title }}</div>
+                  <div>{{ product.price | money }}</div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

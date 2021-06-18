@@ -1,0 +1,70 @@
+<div class="banner-lg banner__lg-overlay" style="{% if section.settings.image %} background-image: url('{{ section.settings.image | img_url: '2048x' }}'); {% else %} background-color: white; {% endif %} background-position: center {{ section.settings.alignment }};">
+    <div class="page-width">
+        <div class="banner-lg__inner {% if section.settings.align == 'center' %}justify-content-center{%endif%}">
+            <div class="banner-lg__content text-{{section.settings.align}}" style="border-left: 1px solid #fff; padding-left:1.5em; ">
+                {% if section.settings.text %}
+                    <h2 class="mega-title fw-bold" style="color: #FFF; font-size: {{ section.settings.text_size }}em;">{{ section.settings.text }}</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <a href="#" class="scroll-indicator">
+      <span class="scroll-indicator__text">Scroll</span>
+      <svg class="scroll-indicator__arrow"  stroke="#FFF" fill="#FFF" viewBox="0 0 50 25">
+        <polyline points="3,3 25.5,23 48,3"></polyline>
+      </svg>
+    </a>
+</div>
+{% schema %}
+{
+    "settings": [
+        {   
+            "type":"image_picker",
+            "id":"image",
+            "label":"Image"
+        },
+        {   
+            "type":"text",
+            "id":"text",
+            "label":"Headline",
+            "default":"Headline"
+        },
+        {
+            "type":"range",
+            "id":"text_size",
+            "label":"Text size",
+            "min":2,
+            "max":6,
+            "step": 0.5,
+            "unit":"em",
+            "default":4
+        },
+        {
+            "type":"range",
+            "id":"max_height",
+            "label":"Max height",
+            "min":2,
+            "max":6,
+            "step": 0.5,
+            "unit":"em",
+            "default": 2
+        },
+        {
+            "type":"select",
+            "id":"align",
+            "label":"Align content",
+            "default":"start",
+            "options": [
+                {"value":"start", "label":"Start"},
+                {"value":"center","label":"Center"}
+            ]
+        }
+    ],
+    "presets":[
+        {
+            "name":"Large Image Banner",
+            "category":"collection"
+        }
+    ]
+}
+{% endschema %}

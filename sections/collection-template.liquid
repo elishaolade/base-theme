@@ -1,0 +1,18 @@
+        <div class="collection-page__grid row collection">
+          {% assign sorted_collection = collection.sort_by %}
+          {% for product in collection.products %}
+            <div class="collection-page__grid-item col-6 col-md-4 col-lg-4">
+              <div class="product">
+                <div class="product__img-wrapper">
+                  <a href="{{ product.url }}" class="product__link">
+                    <img src="{{ product.featured_image | img_url: '500x'}}" class="product__featured-img" />
+                  </a>
+                </div>
+                <div class="product__details-wrapper">
+                  <div>{{ product.title }}</div>
+                  <div>{{ product.price | money }}</div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>

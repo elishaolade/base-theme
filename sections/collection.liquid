@@ -1,0 +1,88 @@
+<div class="page-width">
+    <div class="container">
+        {%- assign collection = collections[section.settings.collection] -%}
+        {% comment %}Title{% endcomment %}
+        {% if section.settings.title %}
+        <div class="section-header text-center">
+            <h2>{{ section.settings.title | escape }}</h2>
+        </div>
+        {% endif %}
+        {% comment %}Title{% endcomment %}
+        {% comment %}grid{% endcomment %}
+        {% case section.settings.grid %}
+            {% when 2 %}
+                {%- assign max_height = 530 -%}
+                {%- assign grid_item_width = 'col-6' -%}
+            {% when 3 %}
+                {%- assign max_height = 345 -%}
+                {%- assign grid_item_width = 'col-6 col-sm-4 col-lg-4' -%}
+            {% when 4 %}
+                {%- assign max_height = 250 -%}
+                {%- assign grid_item_width = 'col-6 col-sm-6 col-md-3' -%}
+        {% endcase %}
+        {% comment %}{% endcomment%}
+        {% assign product_limit = section.settings.grid | times: section.settings.rows %}
+        <div class="grid row flex-wrap">
+            {% for product in collection.products %}
+                <div class="grid-item {{ grid_item_width }}">
+                    {% include 'product-card-grid', max_height: max_height, product: product, show_vendor: section.settings.show_vendor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% schema %}
+{
+    "name":"Featured collection",
+    "class":"index-section",
+    "settings":[
+        {
+            "type":"text",
+            "id":"title",
+            "label":"Heading",
+            "default":"Featured collection"
+        },
+        {
+            "type":"collection",
+            "id":"collection",
+            "label":"Collection"
+        },
+        {
+            "type":"range",
+            "id":"grid",
+            "label":"Products per row",
+            "min": 2,
+            "max": 4,
+            "step": 1,
+            "default": 3
+        },
+        {
+            "type":"range",
+            "id":"rows",
+            "label":"Rows",
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "default": 2
+        },
+        {
+            "type":"checkbox",
+            "id": "show_vendor",
+            "label": "Show product vendors",
+            "default": false
+        },
+        {
+            "type":"checkbox",
+            "id":"show_view_all",
+            "label":"Show 'View all' button",
+            "default": false 
+        }
+    ],
+    "presets": [
+        {
+            "name":"Featured Collection",
+            "category":"Collection"
+        }
+    ]
+}
+{% endschema %}

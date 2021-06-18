@@ -1,0 +1,156 @@
+</div>
+{%- if section.settings.hero_layout == 'full_width' and section.settings.hero_size == 'adapt' -%}
+  {%- if section.settings.image.aspect_ratio == blank -%}
+    {%- assign min_aspect_ratio = 2.0 -%}
+  {%- else -%}
+    {%- assign min_aspect_ratio = section.settings.image.aspect_ratio -%}
+  {%- endif -%}
+  {%- assign wrapper_height = 100 | divided_by: min_aspect_ratio -%}
+  {%- style -%}
+    .hero-{{ section.id }} {
+      height: {{- wrapper_height -}}vw !important;
+    }
+  {%- endstyle -%}
+{%- endif -%}
+
+
+<div class="hero hero-overlay" style="{% if section.settings.image %} background-image: url('{{ section.settings.image | img_url: '2048x' }}'); {% else %} background-color: white; {% endif %} background-position: center {{ section.settings.alignment }};">
+    <div class="page-width">
+        <div class="hero__inner">
+            <div class="page-width text-center">
+                <div class="hero__content">
+                    <div class="text-overlay">
+                        {%- if section.settings.title != blank -%}
+                            <h2 class="h1 mega-title mega-title--{{ section.settings.text_size }}" {% if section.settings.title_color %}style="color: {{ section.settings.title_color }};"{% endif %}>{{ section.settings.title | escape }}</h2>
+                        {%- endif -%}
+                        {%- if section.settings.text != blank -%}
+                            <div class="text-overlay__subheading rte-setting mega-subtitle{% if section.settings.text_size == 'large' %} mega-subtitle--large{% endif %}" {% if section.settings.title_color %}style="color: {{ section.settings.title_color }};"{% endif %}>{{ section.settings.text }}</div>
+                        {%- endif -%}
+                        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+                            <a href="{{ section.settings.button_link }}" class="btn text-overlay__link" style="{% if section.settings.button_bg %}background: {{ section.settings.button_bg }}; color: {{ section.settings.button_text_color }} {% endif %}">
+                            {{ section.settings.button_label | escape }}
+                            </a>
+                        {%- endif -%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% style %}
+    .hero-overlay::before {
+        background-color: {{ section.settings.overlay_color }};
+        opacity: {{ section.settings.overlay_opacity }};
+    }
+{% endstyle %}
+{% schema %}
+  {
+    "name": "Image with text overlay",
+    "settings": [
+        {
+            "id": "image",
+            "type": "image_picker",
+            "label": "Image"
+        },
+        {
+            "type":"select",
+            "id":"hero_layout",
+            "label":"Layout",
+            "default":"full_width",
+            "options":[
+                {
+                    "label":"Full Width",
+                    "value":"full_width"
+                },
+                {
+                    "label":"Fixed Width",
+                    "value":"fixed_width"
+                }
+            ]
+        },
+        {
+            "type":"select",
+            "id":"hero_size",
+            "label":"Section height",
+            "default":"medium",
+            "options":[
+                { "label":"Adapt to image", "value":"adapt" },
+                { "label":"Extra Small", "value":"x-small" },
+                { "label":"Small", "value":"small" },
+                { "label":"Medium", "value":"medium" },
+                { "label":"Large", "value":"large" },
+                { "label":"Extra Large", "value":"x-large" }
+            ]
+        },
+        {
+            "type":"select",
+            "id":"text_size",
+            "label":"Text size",
+            "default":"medium",
+            "options":[
+                { "label": "Medium", "value":"medium" },
+                { "label": "Large", "value":"large" }
+            ]
+        },
+        {
+            "type":"text",
+            "id":"title",
+            "label":"Title",
+            "default": "TIME TO GET IT"
+        },
+        {
+            "type":"richtext",
+            "id":"text",
+            "label":"Text",
+            "default":"<p>Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story.</p>"
+        },
+        {
+            "type":"color",
+            "id":"title_color",
+            "label":"Title color"
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button label"
+        },
+        {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button link"
+        },
+        {
+            "type":"color",
+            "id":"button_bg",
+            "label":"Button background color"
+        },
+        {
+            "type":"color",
+            "id":"button_text_color",
+            "label":"Button text color"
+        },
+        {
+            "type":"color",
+            "id":"overlay_color",
+            "label":"Overlay color"
+        },
+        {
+            "type":"range",
+            "id":"overlay_opacity",
+            "label":"Opacity",
+            "min":0,
+            "max":100,
+            "step":1,
+            "unit":"%",
+            "default":50
+        }
+    ],
+    "presets":[
+        {
+            "name":"Image with overlay",
+            "category":"Image"
+        }
+    ]
+       
+  }
+{% endschema %}
