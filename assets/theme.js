@@ -441,7 +441,6 @@ theme.MobileMenu = (function() {
     }
 })();
 
-window.theme = window.theme || {};
 
 theme.HeaderSection = (function() {
     function Header(){
@@ -450,26 +449,56 @@ theme.HeaderSection = (function() {
     return Header;
 })();
 
-window.theme = window.theme || {};
-theme.Filters = (function() {
-  var selectors = { 
-    sortSelection: '#SortBy'
-  };
-  //Constructor
+theme.Filters = (function(){
   function Filters() {
+    var selectors = { 
+      sortSelection: '#SortBy'
+    };
     this.sortSelect = document.querySelector(selectors.sortSelection);
+    this._initParams();
+
     if(this.sortSelect) {
-      this.sortSelect.addEventListener('change', function(e) {
-        console.log(e.target.value);
-      });
+      this.defaultSort = this._getDefaultSortValue();
+    }
+    if(this.sortSelect) {
+      this.sortSelect.addEventListener('change', this._onSortChange.bind(this));
     }
   }
+  Filters.prototype = Object.assign({},Filters.prototype, {
+    _initParams: function() {
+      this.queryParams = {};
+      if (location.search.length) {
+        var aKeyValue;
+        var aCouples = location.search.substr(1).split('&');
+        for (var i = 0; i < aCouples.length; i++) {
+          aKeyValue = aCouples[i].split('=');
+          if (aKeyValue.length > 1) {
+            this.queryParams[
+              decodeURIComponent(aKeyValue[0])
+            ] = decodeURIComponent(aKeyValue[1]);
+          }
+        }
+      }
+    },
+    _onSortChange: function() {
+      this.queryParams.sort_by = this._getSortValue();
 
-  //Methods
-  Filters.prototype =  Object.assign({}, Filters.prototype, {
+      if (this.queryParams.page) {
+        delete this.queryParams.page;
+      }
 
-  });
-  return Filters;
+      window.location.search = decodeURIComponent(
+        new URLSearchParams(Object.entries(this.queryParams)).toString()
+      );
+    },
+    _getSortValue: function() {
+      return this.sortSelect.value || this.defaultSort;
+    },
+    _getDefaultSortValue: function() {
+      return this.sortSelect.dataset.defaultSortby;
+    }
+  })
+  return new Filters;
 })();
 
 window.theme = window.theme || {};
@@ -485,6 +514,7 @@ theme.Test = (function() {
         console.log(e.target.value);
       })
     }
+    this._test;
   }
 
   Test.prototype = Object.assign({}, Test.prototype, {
@@ -498,8 +528,10 @@ theme.Test = (function() {
 document.addEventListener('DOMContentLoaded', function(){
     var sections = Shopify.theme.sections;
     sections.register('header', theme.MobileMenu.init());
-    sections.register('collection-template', theme.Filters());
-    theme.Test();
-    console.log(theme.Filters);
+    sections.register('collection-template', theme.Filters);
+    // console.log(theme.Filters)
+    // console.log(theme.Filters);
+    // console.log(theme.Filters());
+    // console.log(theme.Filters);
 })
 

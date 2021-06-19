@@ -1,0 +1,19 @@
+<nav role="navigation">
+  <ol class="pagination">
+    {% if paginate.previous.is_link %}
+      <a class="pagination__item" 
+        href="{{ paginate.previous.url }}">{{ paginate.previous.title }}</a>
+    {% endif %}  
+    {% for part in paginate.parts %}
+      {% if part.is_link %}
+        <li class="pagination__item"><a href="{{ part.url }}">{{ part.title }}</a></li>
+      {% else %}
+        <li class="pagination__item">{{ part.title }}</li>
+      {% endif %}
+    {% endfor %} 
+    {% if paginate.next.is_link %}
+      <a class="pagination__item" 
+        href="{{ paginate.next.url }}">{{ paginate.next.title }}</a>
+    {% endif %}      
+  </ol>
+</nav>

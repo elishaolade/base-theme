@@ -1,0 +1,127 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Themekit template theme",
+    "theme_version": "1.0.0",
+    "theme_author": "Shopify",
+    "theme_documentation_url": "https://github.com/Shopify/themekit",
+    "theme_support_url": "https://github.com/Shopify/themekit/issues"
+  },
+  {
+    "name":"Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": {
+          "en":"Headings and buttons"
+        }
+      },
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Font",
+        "default": "helvetica_n7"
+      },
+      {
+        "type": "range",
+        "id": "type_header_base_size",
+        "label": "Heading base size",
+        "default": 26,
+        "min": 20,
+        "max": 36,
+        "step": 1,
+        "unit": "px"
+      },
+      {
+        "type": "header",
+        "content": {
+          "en":"Body Text"
+        }
+      },
+      {
+        "type":"font_picker",
+        "id":"type_base_font",
+        "label":"Font",
+        "default":"helvetica_n7"
+      },
+      {
+        "type":"range",
+        "id":"type_base_size",
+        "label":"Base size",
+        "default":15,
+        "min":14,
+        "max":20,
+        "step":1,
+        "unit":"px"
+      }
+    ]
+  },
+  {
+    "name":"Colors",
+    "settings":[
+      {
+        "type":"header",
+        "content":{
+          "en":"Text"
+        }
+      },
+      {
+        "type":"color",
+        "id":"color_text",
+        "label":"Color"
+      },
+      {
+        "type":"color",
+        "id":"color_body_text",
+        "label":"Body text",
+        "default": "#333232"
+      },
+      {
+        "type":"color",
+        "id":"color_sale_text",
+        "label":"Sale price",
+        "default": "#EA0606"
+      },
+      {
+        "type":"header",
+        "content":{
+          "en":"Buttons"
+        }
+      },
+      {
+        "type":"color",
+        "id":"color_button",
+        "label":"Primary Buttons",
+        "default":"#3A3A3A"
+      },
+      {
+        "type":"header",
+        "content":{
+          "en":"Links"
+        }
+      },
+      {
+        "type":"color",
+        "id":"link_hover",
+        "label":"Link hover color",
+        "default":"#3A3A3A"
+      },
+      {
+        "type":"header",
+        "content":{
+          "en":"Overlay"
+        }
+      },
+      {
+        "type":"range",
+        "id":"image_overlay_opacity",
+        "label":"Opacity",
+        "min":0,
+        "max":100,
+        "step":1,
+        "unit":"%",
+        "default":50
+      }
+    ]
+  }
+]

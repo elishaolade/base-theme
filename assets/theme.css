@@ -36,6 +36,10 @@ a {
     text-decoration: none;
     color: var(--text-color);
 }
+
+a:hover {
+    color: var(--color-link-hover);
+}
 /*============================================================================
   #Grid
 ==============================================================================*/
@@ -947,4 +951,12 @@ ul li a{
     display: flex;
     justify-content: space-between;
     padding: 1em;
+}
+
+.pagination {
+    display: flex;
+}
+
+.pagination__item {
+    margin-right: 1em;
 }
