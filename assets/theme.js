@@ -504,15 +504,17 @@ theme.Products = (function(){
   
 })();
 
+
 theme.ProductRecommendations = (function() {
   function ProductRecommendations(container) {
+    var $container = (this.$container = $(container));
     var baseUrl = container.dataset.baseUrl;
     var productId = container.dataset.productId;
-    var recommendationsSectionUrl =
-      baseUrl +
-      '?section_id=product-recommendations&product_id=' +
-      productId +
-      '&limit=4';
+    var productRecommendationsUrlAndContainerClass = baseUrl + '?section_id=product-recommendations&limit=' + limit +
+    '&product_id=' +productId +
+    ' .product-recommendations';
+
+    $container.parent().load(productRecommendationsUrlAndContainerClass);
 
     window.performance.mark(
       'debut:product:fetch_product_recommendations.start'

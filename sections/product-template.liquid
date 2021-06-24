@@ -16,6 +16,7 @@
                             </div>
                         {%- endfor -%}
                         <div class="product-template__thumbnails">
+                            <button type="button" class="thumbnails__prev product-template__arrow">prev</button>
                             <ul class="product-template__thumbnail-list">
                                 {% for media in product.media %}
                                     <li class="product-template__thumbnail-item">
@@ -25,6 +26,7 @@
                                     </li>
                                 {% endfor %}
                             </ul>
+                            <button type="button" class="thumbnails__next product-template__arrow">next</button>
                         </div>
                     </div>
                 </div>
