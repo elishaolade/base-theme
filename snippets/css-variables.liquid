@@ -20,7 +20,6 @@
     --color-text-field: {{ settings.color_text_field }};
     --color-text-field-text: {{ settings.color_text_field_text }};
     --color-text-field-text-rgb: {{ settings.color_text_field_text | color_to_rgb | remove: 'rgb(' | remove: 'rgba(' | remove: ')' | remove: ', 0.0' }};
-
     --color-btn-primary: {{ settings.color_button }};
     --color-btn-primary-darker: {{ settings.color_button | color_darken: 10 }};
     --color-btn-primary-text: {{ settings.color_button_text }};

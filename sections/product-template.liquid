@@ -1,0 +1,88 @@
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  {%- assign product_image_zoom_size = '1024x1024' -%}
+  {%- assign product_image_scale = '2' -%}
+  {%- assign enable_image_zoom = section.settings.enable_image_zoom -%}
+  {%- assign compare_at_price = current_variant.compare_at_price -%}
+  {%- assign price = current_variant.price -%}
+<div class="product-template page-width my-3">
+    <div class="container g-0">
+        <div class="row g-0">
+            <div class="d-flex flex-wrap">
+                <div class="col-12 col-md-6">
+                    <div class="product-template__carousel">
+                        {%- for media in product.media -%}
+                            <div class="single-media-item">
+                                {% include 'media', media: media, featured_media: featured_media, height: 1090, enable_image_zoom: enable_image_zoom, image_zoom_size: product_image_zoom_size, image_scale: product_image_scale %}
+                            </div>
+                        {%- endfor -%}
+                        <div class="product-template__thumbnails">
+                            <ul class="product-template__thumbnail-list">
+                                {% for media in product.media %}
+                                    <li class="product-template__thumbnail-item">
+                                        <button class="product-template__thumbnail-button" type="button" data-thumbnail-index="{{ forloop.index0 }}">
+                                            <img class="product-template__thumbnail-img" src="{{ media | img_url: '100x100' }}"/>
+                                        </button>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="product-template__detail p-l-4">
+                        <div class="product-template__detail-head">
+                            <h1 class="product-template__title">{{ product.title }}</h1>
+                            <div class="product__price my-2">
+                                {% include 'product-price', variant: current_variant, show_vendor: section.settings.show_vendor %}
+                            </div>
+                        </div>
+                        <div class="product-template__detail-body">
+                            {% form "product", product %}
+                                <div class="btn-wrapper my-2">
+                                    <button class="add-to-cart-btn btn" type="submit">add to cart</button>
+                                    <button class="buy-now-btn btn btn--secondary" type="button">buy now</button>
+                                </div>
+                            {% endform %}
+                            <h6>About Product</h6>
+                            <div>
+                                <p>{{ product.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% schema %}
+{
+    "name": "Product pages",
+    "settings": [
+        {   
+            "id":"cart_btn_text",
+            "type":"text",
+            "label":"Add to cart text",
+            "default":"Add to bag"
+        },
+        {
+            "id":"show_quantitiy_selector",
+            "type":"checkbox",
+            "label":"Show quantitiy selector",
+            "default":false
+        },
+        {
+            "type":"checkbox",
+            "id":"show_vendor",
+            "label":"Show vendor",
+            "default":false
+        },
+        {
+            "type":"checkbox",
+            "id":"enable_payment_button",
+            "label":"Show dynamic checkout button",
+            "info":"Each customer will see their preferred payment method from those available on your store, such as PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "default":true
+        }       
+    ]
+}
+{% endschema %}

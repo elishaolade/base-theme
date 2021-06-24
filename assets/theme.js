@@ -441,7 +441,6 @@ theme.MobileMenu = (function() {
     }
 })();
 
-
 theme.HeaderSection = (function() {
     function Header(){
         theme.MobileMenu.init();
@@ -501,34 +500,54 @@ theme.Filters = (function(){
   return new Filters;
 })();
 
-window.theme = window.theme || {};
-theme.Test = (function() {
-  var selectors = {
-    sortSelection: '#SortBy'
-  }
+theme.Products = (function(){
+  
+})();
 
-  function Test() {
-    this.sortSelect = document.querySelector(selectors.sortSelection);
-    if(this.sortSelect) {
-      this.sortSelect.addEventListener('change',function(e){
-        console.log(e.target.value);
+theme.ProductRecommendations = (function() {
+  function ProductRecommendations(container) {
+    var baseUrl = container.dataset.baseUrl;
+    var productId = container.dataset.productId;
+    var recommendationsSectionUrl =
+      baseUrl +
+      '?section_id=product-recommendations&product_id=' +
+      productId +
+      '&limit=4';
+
+    window.performance.mark(
+      'debut:product:fetch_product_recommendations.start'
+    );
+
+    fetch(recommendationsSectionUrl)
+      .then(function(response) {
+        return response.text();
       })
-    }
-    this._test;
+      .then(function(productHtml) {
+        if (productHtml.trim() === '') return;
+
+        container.innerHTML = productHtml;
+        container.innerHTML = container.firstElementChild.innerHTML;
+
+        window.performance.mark(
+          'debut:product:fetch_product_recommendations.end'
+        );
+
+        performance.measure(
+          'debut:product:fetch_product_recommendations',
+          'debut:product:fetch_product_recommendations.start',
+          'debut:product:fetch_product_recommendations.end'
+        );
+      });
   }
 
-  Test.prototype = Object.assign({}, Test.prototype, {
-    _test: function() {
-      console.log('test')
-    }
-  });
-  return Test;
+  return ProductRecommendations;
 })();
 
 document.addEventListener('DOMContentLoaded', function(){
     var sections = Shopify.theme.sections;
     sections.register('header', theme.MobileMenu.init());
     sections.register('collection-template', theme.Filters);
+    sections.register('product-recommendations', theme.ProductRecommendations);
     // console.log(theme.Filters)
     // console.log(theme.Filters);
     // console.log(theme.Filters());

@@ -95,6 +95,12 @@
         "default":"#3A3A3A"
       },
       {
+        "type":"color",
+        "id":"color_button_text",
+        "label":"Primary button text color",
+        "default":"#FFFFFF"
+      },
+      {
         "type":"header",
         "content":{
           "en":"Links"

@@ -11,6 +11,9 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   {{ 'application.scss.css' | asset_url | stylesheet_tag }}
+  {% if template == 'product' %} 
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  {% endif %}
   {{ 'theme.css' | asset_url | stylesheet_tag }}
   {{ 'application.js' | asset_url | script_tag }}
   {% include 'css-variables' %}
@@ -24,6 +27,11 @@
   </main>
   <script src="{{ 'ls.rias.min.js'| asset_url }}"></script> 
   <script src="{{ 'lazysizes.js' | asset_url }}"></script>
+  {% if template == 'product' %}
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    {{ 'carousel-product-page.js' | asset_url | script_tag }}
+  {% endif %}
   <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
 </body>
 </html>
