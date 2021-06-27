@@ -11,74 +11,58 @@
                     <th class="line-item__qty">Quantity</th>
                     <th class="line-item__total">Total</th>
                 </tr>
-                <tr class="line-item">
-                    <td class="line-item__product">
-                        <div class="line-item__single single">
-                            <div class="line-item__img-wrapper single__img-wrapper">
-                                <img src="{{ 'morocco-graphite-3-piece-sectional-with-white-sunbrella-cushions.jpg' | asset_img_url: '110x110' }}"/>
-                            </div>
-                            <div class="line-item__details single__details">
-                                <h6 class="line-item__title single__title">Dune Navy Blue Sofa With sunbrella</h6>
-                                <button class="line-item__remove single__remove no-type" type="button">remove</button>
-                                <div class="line-item__hidden-qty-price">
-                                    <div>
-                                        <label for="qty-input">Qty</label>
-                                        <input id="qty-input" class="line-item__qty-input" value="1" min="1" pattern="[0-9]"/>
+                {% for item in cart.items %}
+                    <tr class="line-item" 
+                        data-cart-item 
+                        data-line-item-key="{{ item.key }}" 
+                        data-cart-item-url="{{ item.url }}" 
+                        data-cart-item-title="{{ item.title }}" 
+                        data-cart-item-index="{{ forloop.index }}" 
+                        data-cart-item-quantity="{{ item.quantity }}"> 
+                        <td class="line-item__product">
+                            <div class="line-item__single single">
+                                <div class="line-item__img-wrapper single__img-wrapper">
+                                    <img src="{{ item.image | img_url: '75x75' }}" alt="{{ item.title }}"/>
+                                </div>
+                                <div class="line-item__details single__details">
+                                    <h6 class="line-item__title single__title">
+                                        <a class="line-item__product-url" href="{{ item.url }}">{{ item.title }}</a>
+                                    </h6>
+                                    <button class="line-item__remove single__remove no-type" type="button" data-cart-remove>remove</button>
+                                    <div class="line-item__hidden-qty-price">
+                                        <div>
+                                            <label for="qty-input">Qty</label>
+                                            <input id="qty-input" class="line-item__qty-input" value="{{ item.quantity }}" min="1" pattern="[0-9]" data-quantity-input data-quantity-item="{{ forloop.index }}/>
+                                        </div>
+                                        <span class="line-item__sm-price">{{ item.line_price | money }}</span>
                                     </div>
-                                    <span>$100.00</span>
+                                    <div class="line-item__error-message-wrapper hide" data-cart-error-message-wrapper>
+                                        <span class="cart__error-message" data-cart-error-message></span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                    <td class="line-item__price">
-                        <span>$200.00</span>
-                    </td>
-                    <td class="line-item__qty">
-                        <input class="line-item__qty-input" value="1" min="1" pattern="[0-9]"/>
-                    </td>
-                    <td class="line-item__total">
-                        <span>$200.00</span>
-                    </td>
-                </tr>
-                <tr class="line-item">
-                    <td class="line-item__product">
-                        <div class="line-item__single single">
-                            <div class="line-item__img-wrapper single__img-wrapper">
-                                <img src="{{ 'morocco-graphite-3-piece-sectional-with-white-sunbrella-cushions.jpg' | asset_img_url: '110x110' }}"/>
-                            </div>
-                            <div class="line-item__details single__details">
-                                <h6 class="line-item__title single__title">Dune Navy Blue Sofa With sunbrella</h6>
-                                <button class="line-item__remove single__remove no-type" type="button">remove</button>
-                                <div class="line-item__hidden-qty-price">
-                                    <div>
-                                        <label for="qty-input">Qty</label>
-                                        <input id="qty-input" class="line-item__qty-input" value="1" min="1" pattern="[0-9]"/>
-                                    </div>
-                                    <span>$100.00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="line-item__price">
-                        <span>$200.00</span>
-                    </td>
-                    <td class="line-item__qty">
-                        <input class="line-item__qty-input" value="1" min="1" pattern="[0-9]"/>
-                    </td>
-                    <td class="line-item__total">
-                        <span>$200.00</span>
-                    </td>
-                </tr>
+                        </td>
+                        <td class="line-item__price">
+                            <span>{{ item.line_price | price }}</span>
+                        </td>
+                        <td class="line-item__qty">
+                            <input class="line-item__qty-input" value="{{ item.quantity }}" min="1" pattern="[0-9]"/>
+                        </td>
+                        <td class="line-item__total">
+                            <span>{{ item.line_price | money }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
             </table>
             <div class="d-flex justify-content-end">
                 <div class="subtotal">
                     <div class="subtotal__inner">
                         <div class="subtotal__head">
                             <span class="subtotal__label">subtotal</span>
-                            <span class="subtotal__price">$90.00</span>
+                            <span class="subtotal__price">{{ cart.total_price | money }}</span>
                         </div>
                         <div class="subtotal__body">
-                            <p class="subtotal__note">Taxes and shipping calculated at checkout</p>
+                            <p class="subtotal__note">{{ section.settings.note }}</p>
                             <a class="subtotal__checkout btn" href="#">checkout</a>
                         </div>
                     </div>
@@ -102,3 +86,16 @@
         </div>
     </div>
 {% endif %}
+{% schema %}
+{
+    "name":"Cart Template",
+    "settings": [
+        {
+            "id":"note",
+            "type":"text",
+            "label":"Subtotal note",
+            "default":"Taxes and shipping calculated at checkout"
+        }
+    ]
+}
+{% endschema %}

@@ -69,7 +69,8 @@ a:hover {
   Reversed grids allow you to structure your source in the opposite
   order to how your rendered layout will appear.
 ==============================================================================*/
-
+/*=================== #Utility ====================*/
+.hide { display: none !important; }
 /*=================== #Lazysizes =====================*/
 .lazyload,.lazyloading {
     opacity: 0;
