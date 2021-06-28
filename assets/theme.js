@@ -513,6 +513,8 @@ theme.Cart = (function() {
     hide: 'hide'
   }
   var attributes = {
+    cartLineItems: 'data-cart-line-items',
+    cartItem: 'data-cart-item',
     cartItemIndex: 'data-cart-item-index',
     cartItemKey: 'data-cart-item-key',
     cartItemQuantity: 'data-cart-item-quantity',
@@ -521,7 +523,43 @@ theme.Cart = (function() {
     quantityItem: 'data-quantity-item'
   };
 
+  function Cart() {
+    // this._onRemoveItem = this._onRemoveItem.bind(this);
+    // this._updateLineItem = this._updateLineItem.bind(this);
+    // this._onRemoveItem = this._onRemoveItem.bind(this);
+    this._createItem = this._createItem.bind(this);
+    this.cartItems = document.querySelectorAll(selectors.lineItem);
+    this.cartItems.forEach(item => this._createItem(item));
+  }
+  
+
   Cart.prototype = Object.assign({}, Cart.prototype, {
+    _createItem: function(lineItem) {
+      console.log(lineItem.dataset)
+      var itemObj = {
+        key: lineItem.dataset.lineItemKey,
+        quantity: lineItem.dataset.cartItemQuantity
+      }
+      console.log(itemObj);
+    },
+    _createCart: function(state) {
+      var cartTable = this.document.querySelector(selectors.cartLineItems);
+      cartTable.innerHTML = '';
+      this._createLineItemList(state).forEach(function(lineItem) {
+        cartTable.appendChild(lineItem);
+      });
+      // this.setQuantityFormControllers();
+
+      this.document.querySelector(
+        selectors.cartSubtotal
+      ).innerHTML = theme.Currency.formatMoney(
+        state.total_price,
+        theme.moneyFormatWithCurrency
+      );
+    },
+    _updateLineItem: function(evt) {
+      console.log(evt.target);
+    },
     _handleInputQty: function(evt) {
       if(!evt.target.hasAttribute('data-quantity-input')) return;
       var input = evt.target;
@@ -590,7 +628,9 @@ theme.Cart = (function() {
         );
     },
   })
-});
+
+  return new Cart;
+})();
 
 theme.Products = (function(){
 
@@ -642,6 +682,7 @@ document.addEventListener('DOMContentLoaded', function(){
     sections.register('header', theme.MobileMenu.init());
     sections.register('collection-template', theme.Filters);
     sections.register('product-recommendations', theme.ProductRecommendations);
+    sections.register('cart-template', theme.Cart);
     // console.log(theme.Filters)
     // console.log(theme.Filters);
     // console.log(theme.Filters());

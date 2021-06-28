@@ -3,56 +3,58 @@
         <div class="cart__head section__head">
             <h1 class="section__title">your bag</h1>
         </div>
-        <div class="cart__body section__body">
+        <div class="cart__body section__body" data-cart-line-items>
             <table class="cart__items">
-                <tr>
+                <thead>
                     <th class="line-item__product">Product</th>
                     <th class="line-item__price">Price</th>
                     <th class="line-item__qty">Quantity</th>
                     <th class="line-item__total">Total</th>
-                </tr>
-                {% for item in cart.items %}
-                    <tr class="line-item" 
-                        data-cart-item 
-                        data-line-item-key="{{ item.key }}" 
-                        data-cart-item-url="{{ item.url }}" 
-                        data-cart-item-title="{{ item.title }}" 
-                        data-cart-item-index="{{ forloop.index }}" 
-                        data-cart-item-quantity="{{ item.quantity }}"> 
-                        <td class="line-item__product">
-                            <div class="line-item__single single">
-                                <div class="line-item__img-wrapper single__img-wrapper">
-                                    <img src="{{ item.image | img_url: '75x75' }}" alt="{{ item.title }}"/>
-                                </div>
-                                <div class="line-item__details single__details">
-                                    <h6 class="line-item__title single__title">
-                                        <a class="line-item__product-url" href="{{ item.url }}">{{ item.title }}</a>
-                                    </h6>
-                                    <button class="line-item__remove single__remove no-type" type="button" data-cart-remove>remove</button>
-                                    <div class="line-item__hidden-qty-price">
-                                        <div>
-                                            <label for="qty-input">Qty</label>
-                                            <input id="qty-input" class="line-item__qty-input" value="{{ item.quantity }}" min="1" pattern="[0-9]" data-quantity-input data-quantity-item="{{ forloop.index }}/>
+                </thead>
+                <tbody>
+                    {% for item in cart.items %}
+                        <tr class="line-item" 
+                            data-cart-item 
+                            data-line-item-key="{{ item.key }}" 
+                            data-cart-item-url="{{ item.url }}" 
+                            data-cart-item-title="{{ item.title }}" 
+                            data-cart-item-index="{{ forloop.index }}" 
+                            data-cart-item-quantity="{{ item.quantity }}"> 
+                            <td class="line-item__product" data-cart-table-cell>
+                                <div class="line-item__single single">
+                                    <div class="line-item__img-wrapper single__img-wrapper">
+                                        <img src="{{ item.image | img_url: '75x75' }}" alt="{{ item.title }}"/>
+                                    </div>
+                                    <div class="line-item__details single__details">
+                                        <h6 class="line-item__title single__title">
+                                            <a class="line-item__product-url" href="{{ item.url }}">{{ item.title }}</a>
+                                        </h6>
+                                        <button class="line-item__remove single__remove no-type" type="button" data-cart-remove>remove</button>
+                                        <div class="line-item__hidden-qty-price" data-line-item-product>
+                                            <div>
+                                                <label for="qty-input">Qty</label>
+                                                <input id="qty-input" class="line-item__qty-input" value="{{ item.quantity }}" min="1" pattern="[0-9]" data-quantity-input data-quantity-item="{{ forloop.index }}/>
+                                            </div>
+                                            <span class="line-item__sm-price" data-sm-price>{{ item.line_price | money }}</span>
                                         </div>
-                                        <span class="line-item__sm-price">{{ item.line_price | money }}</span>
-                                    </div>
-                                    <div class="line-item__error-message-wrapper hide" data-cart-error-message-wrapper>
-                                        <span class="cart__error-message" data-cart-error-message></span>
+                                        <div class="line-item__error-message-wrapper hide" data-cart-error-message-wrapper>
+                                            <span class="cart__error-message" data-cart-error-message></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td class="line-item__price">
-                            <span>{{ item.line_price | price }}</span>
-                        </td>
-                        <td class="line-item__qty">
-                            <input class="line-item__qty-input" value="{{ item.quantity }}" min="1" pattern="[0-9]"/>
-                        </td>
-                        <td class="line-item__total">
-                            <span>{{ item.line_price | money }}</span>
-                        </td>
-                    </tr>
-                {% endfor %}
+                            </td>
+                            <td class="line-item__price">
+                                <span>{{ item.line_price | price }}</span>
+                            </td>
+                            <td class="line-item__qty">
+                                <input class="line-item__qty-input" value="{{ item.quantity }}" min="1" pattern="[0-9]"/>
+                            </td>
+                            <td class="line-item__total">
+                                <span>{{ item.line_price | money }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
             <div class="d-flex justify-content-end">
                 <div class="subtotal">
