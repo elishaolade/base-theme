@@ -3,15 +3,15 @@
         <div class="cart__head section__head">
             <h1 class="section__title">your bag</h1>
         </div>
-        <div class="cart__body section__body" data-cart-line-items>
-            <table class="cart__items">
+        <div class="cart__body section__body">
+            <table class="cart__items" data-cart-table>
                 <thead>
                     <th class="line-item__product">Product</th>
                     <th class="line-item__price">Price</th>
                     <th class="line-item__qty">Quantity</th>
                     <th class="line-item__total">Total</th>
                 </thead>
-                <tbody>
+                <tbody data-cart-line-items>
                     {% for item in cart.items %}
                         <tr class="line-item" 
                             data-cart-item 
@@ -44,13 +44,13 @@
                                 </div>
                             </td>
                             <td class="line-item__price">
-                                <span>{{ item.line_price | price }}</span>
+                                <span data-line-item-price>{{ item.price | money }}</span>
                             </td>
                             <td class="line-item__qty">
-                                <input class="line-item__qty-input" value="{{ item.quantity }}" min="1" pattern="[0-9]"/>
+                                <input class="line-item__qty-input" data-line-item-quantity value="{{ item.quantity }}" min="1" pattern="[0-9]"/>
                             </td>
                             <td class="line-item__total">
-                                <span>{{ item.line_price | money }}</span>
+                                <span data-line-item-total>{{ item.line_price | money }}</span>
                             </td>
                         </tr>
                     {% endfor %}

@@ -1,3 +1,4 @@
+window.theme = window.theme || {};
 this.Shopify = this.Shopify || {};
 this.Shopify.theme = this.Shopify.theme || {};
 this.Shopify.theme.sections = (function (exports) {
@@ -396,7 +397,79 @@ this.Shopify.theme.sections = (function (exports) {
   return exports;
 
 }({}));
+/* =============== UTILITIES =============== */
+/**
+ * Currency Helpers
+ * -----------------------------------------------------------------------------
+ * A collection of useful functions that help with currency formatting
+ *
+ * Current contents
+ * - formatMoney - Takes an amount in cents and returns it as a formatted dollar value.
+ *
+ * Alternatives
+ * - Accounting.js - http://openexchangerates.github.io/accounting.js/
+ *
+ */
 
+ theme.Currency = (function() {
+  var moneyFormat = '${{amount}}'; // eslint-disable-line camelcase
+
+  function formatMoney(cents, format) {
+    if (typeof cents === 'string') {
+      cents = cents.replace('.', '');
+    }
+    var value = '';
+    var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+    var formatString = format || moneyFormat;
+
+    function formatWithDelimiters(number, precision, thousands, decimal) {
+      thousands = thousands || ',';
+      decimal = decimal || '.';
+
+      if (isNaN(number) || number === null) {
+        return 0;
+      }
+
+      number = (number / 100.0).toFixed(precision);
+
+      var parts = number.split('.');
+      var dollarsAmount = parts[0].replace(
+        /(\d)(?=(\d\d\d)+(?!\d))/g,
+        '$1' + thousands
+      );
+      var centsAmount = parts[1] ? decimal + parts[1] : '';
+
+      return dollarsAmount + centsAmount;
+    }
+
+    switch (formatString.match(placeholderRegex)[1]) {
+      case 'amount':
+        value = formatWithDelimiters(cents, 2);
+        break;
+      case 'amount_no_decimals':
+        value = formatWithDelimiters(cents, 0);
+        break;
+      case 'amount_with_comma_separator':
+        value = formatWithDelimiters(cents, 2, '.', ',');
+        break;
+      case 'amount_no_decimals_with_comma_separator':
+        value = formatWithDelimiters(cents, 0, '.', ',');
+        break;
+      case 'amount_no_decimals_with_space_separator':
+        value = formatWithDelimiters(cents, 0, ' ');
+        break;
+      case 'amount_with_apostrophe_separator':
+        value = formatWithDelimiters(cents, 2, "'");
+        break;
+    }
+
+    return formatString.replace(placeholderRegex, value);
+  }
+
+  return {
+    formatMoney: formatMoney
+  };
+})();
 /* ================ MODULES ================ */
 window.theme = window.theme || {};
 
@@ -502,11 +575,16 @@ theme.Filters = (function(){
 
 theme.Cart = (function() {
   var selectors = {
-    cartItem: '[data-cart-item]',
     lineItem: '.line-item',
     lineItemRemove: '.line-item__remove',
     lineItemQty: '.line-item__qty-input',
     lineItemPriceMobile: '.line-item__sm-price',
+    cartSubtotal: '.subtotal__price',
+    cartLineItems: '[data-cart-line-items]',
+    cartLineItemPrice: '[data-line-item-price]',
+    cartLineItemQuantity: '[data-line-item-quantity]',
+    cartLineItemTotal: '[data-line-item-total]',
+    cartRow: '.cart-row',
     cartSubtotal: '.subtotal__price'
   };
   var classes = {
@@ -520,79 +598,50 @@ theme.Cart = (function() {
     cartItemQuantity: 'data-cart-item-quantity',
     cartItemTitle: 'data-cart-item-title',
     cartItemUrl: 'data-cart-item-url',
-    quantityItem: 'data-quantity-item'
+    quantityItem: 'data-quantity-item',
+    cartItemRemove: 'data-cart-remove'
   };
 
   function Cart() {
-    // this._onRemoveItem = this._onRemoveItem.bind(this);
-    // this._updateLineItem = this._updateLineItem.bind(this);
-    // this._onRemoveItem = this._onRemoveItem.bind(this);
+    this._onRemoveItem = this._onRemoveItem.bind(this);
+    this._onUpdateItem = this._onUpdateItem.bind(this);
+    this.cartRoutes = JSON.parse(
+      document.querySelector('[data-cart-routes]').innerHTML
+    );
     this._createItem = this._createItem.bind(this);
+    this.cartLineItems = document.querySelector(selectors.cartLineItems);
     this.cartItems = document.querySelectorAll(selectors.lineItem);
     this.cartItems.forEach(item => this._createItem(item));
+    this.cartSubtotal = document.querySelector(selectors.cartSubtotal);
   }
   
 
   Cart.prototype = Object.assign({}, Cart.prototype, {
-    _createItem: function(lineItem) {
-      console.log(lineItem.dataset)
+    _createItem: function(item) {
       var itemObj = {
-        key: lineItem.dataset.lineItemKey,
-        quantity: lineItem.dataset.cartItemQuantity
+        index: item.dataset.cartItemIndex,
+        key: item.dataset.lineItemKey,
+        quantity: item.dataset.cartItemQuantity
       }
-      console.log(itemObj);
+      var removeButton = item.querySelector(selectors.lineItemRemove);
+      var quantity = item.querySelector(selectors.cartLineItemQuantity);
+      console.log(quantity);
+      removeButton.addEventListener('click', () => this._onRemoveItem(item, itemObj));
+      quantity.addEventListener('change', (evt) => this._onUpdateItem(evt));
     },
-    _createCart: function(state) {
-      var cartTable = this.document.querySelector(selectors.cartLineItems);
-      cartTable.innerHTML = '';
-      this._createLineItemList(state).forEach(function(lineItem) {
-        cartTable.appendChild(lineItem);
-      });
-      // this.setQuantityFormControllers();
+    _onRemoveItem: function(item) {
+      item.remove();
+    },
+    _onUpdateItem: function(evt) {
+      var qty = evt.target;
+      var item = qty.closest(selectors.lineItem);
+      var total = item.querySelector(selectors.cartLineItemTotal);
 
-      this.document.querySelector(
-        selectors.cartSubtotal
-      ).innerHTML = theme.Currency.formatMoney(
-        state.total_price,
-        theme.moneyFormatWithCurrency
-      );
-    },
-    _updateLineItem: function(evt) {
-      console.log(evt.target);
-    },
-    _handleInputQty: function(evt) {
-      if(!evt.target.hasAttribute('data-quantity-input')) return;
-      var input = evt.target;
-      var itemElement = input.closest(selectors.cartItem);
-      var itemIndex = Number(input.getAttribute('data-quantity-item'));
-      var itemQtyInputs = this.container.querySelectorAll(`[data-quantity-item=${itemIndex}]`);
-      var value = parseInt(input.value);
-      var isValidValue = !(value < 0 || isNaN(value));
-      itemQtyInputs.forEach(element => element.value = value);
-    },
-    _hideCartError: function() {
-      document
-        .querySelector(selectors.cartErrorMessageWrapper)
-        .classList.add(classes.hide);
-      document.querySelector(selectors.cartErrorMessage).textContent = '';
-    },
-    _showCartError: function(elementToFocus) {
-      document.querySelector(selectors.cartErrorMessage).textContent = 
-        'Error';
-      document
-        .querySelector(selectors.cartErrorMessageWrapper)
-        .classList.remove(classes.hide);
-      if (!elementToFocus) return;
-        elementToFocus.focus();
-    },
-    _onRemoveItem: function(evt) {
-      if (!evt.target.hasAttribute('data-cart-remove')) return;
-
-      evt.preventDefault();
-      var lineItem = evt.target.closest(selectors.cartItem);
-      var index = Number(lineItem.getAttribute(attributes.cartItemIndex));
-
-      this._hideCartError();
+      var itemObj = {
+        index: item.dataset.cartItemIndex,
+        key: item.dataset.lineItemKey,
+        quantity: qty.value
+      }
 
       var request = {
         method: 'POST',
@@ -600,8 +649,8 @@ theme.Cart = (function() {
           'Content-Type': 'application/json;'
         },
         body: JSON.stringify({
-          line: index,
-          quantity: 0
+          line: itemObj.index,
+          quantity: itemObj.quantity
         })
       };
 
@@ -611,22 +660,93 @@ theme.Cart = (function() {
         })
         .then(
           function(state) {
-            if (state.item_count === 0) {
-              // this._emptyCart();
-            } else {
-              // this._createCart(state);
-              // this._showRemoveMessage(lineItem.cloneNode(true));
-            }
-
-            // this._setCartCountBubble(state.item_count);
+            // total.innerHTML = 
+            // console.log(state);
+            // var update = this.getItem(key, state);
+            // console.log(item);
+            /**
+             * 1. Get updated item
+             * 2. Update item total
+             * 2. Update cart subtotal
+             * 3. Update bubble count
+             */
+            var updatedItem = this.getItem(itemObj.key, state);
+            console.log(state);
+            total.innerHTML = theme.Currency.formatMoney(
+              updatedItem.line_price, theme.moneyFormat);
+            this.updateCartTotal(state);
           }.bind(this)
         )
-        .catch(
-          function() {
-            this._showCartError(null);
-          }.bind(this)
-        );
     },
+    _handleInputQty: function(evt) {
+      if (!evt.target.hasAttribute('data-quantity-input')) return;
+
+      var input = evt.target;
+      var itemIndex = Number(input.getAttribute('data-quantity-item'));
+      var itemQtyInputs = document.querySelectorAll(
+        "[data-quantity-item='" + itemIndex + "']"
+      );
+      var value = parseInt(input.value);
+      var isValidValue = !(value < 0 || isNaN(value));
+
+      itemQtyInputs.forEach(function(element) {
+        element.value = value;
+      });
+
+      // this._hideCartError();
+      // this._hideQuantityErrorMessage();
+
+      if (!isValidValue) {
+        // this._showQuantityErrorMessages(itemElement);
+        return;
+      }
+
+      if (isValidValue && this.ajaxEnabled) {
+        this._updateItemQuantity(itemIndex, itemElement, itemQtyInputs, value);
+      }
+    },
+    _updateItemQuantity: function(
+      itemIndex,
+      itemElement,
+      itemQtyInputs,
+      value
+    ) {
+      var key = itemElement.getAttribute(attributes.cartItemKey);
+      var index = Number(itemElement.getAttribute(attributes.cartItemIndex));
+
+      var request = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;'
+        },
+        body: JSON.stringify({
+          line: index,
+          quantity: value
+        })
+      };
+
+      fetch(this.cartRoutes.cartChangeUrl + '.js', request)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(state){
+
+        }.bind(this)
+      )
+      .catch(
+        function() {
+          // this._showCartError(null);
+        }.bind(this)
+      );
+    },
+    updateCartTotal: function(state) {
+      this.cartSubtotal.innerHTML = theme.Currency.formatMoney(
+        state.total_price, theme.moneyFormat);
+    },
+    getItem: function(key, state) {
+      return state.items
+        .find(item => item.key === key);
+    }
   })
 
   return new Cart;
