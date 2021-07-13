@@ -589,13 +589,14 @@ theme.Cart = (function() {
   };
   var classes = {
     hide: 'hide'
-  }
+  };
   var attributes = {
     cartLineItems: 'data-cart-line-items',
     cartItem: 'data-cart-item',
     cartItemIndex: 'data-cart-item-index',
     cartItemKey: 'data-cart-item-key',
     cartItemQuantity: 'data-cart-item-quantity',
+    cartItemVariantId: 'data-line-variant-id',
     cartItemTitle: 'data-cart-item-title',
     cartItemUrl: 'data-cart-item-url',
     quantityItem: 'data-quantity-item',
@@ -613,7 +614,7 @@ theme.Cart = (function() {
     this.cartItems = document.querySelectorAll(selectors.lineItem);
     this.cartItems.forEach(item => this._createItem(item));
     this.cartSubtotal = document.querySelector(selectors.cartSubtotal);
-  }
+  };
   
 
   Cart.prototype = Object.assign({}, Cart.prototype, {
@@ -630,46 +631,61 @@ theme.Cart = (function() {
       quantity.addEventListener('change', (evt) => this._onUpdateItem(evt));
     },
     _onRemoveItem: function(item) {
-      item.remove();
+      console.log(item)
+      /* Get variant id */
+      var variantId = item.getAttribute(attributes.cartItemVariantId);
+      /* Create form data */
+      fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: 0
+        })
+      })
+      .then(response => {
+        item.remove();
+        return response.json();
+      })
+      .then(state => {
+        console.log(state);
+        this.updateCartTotal(state);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
     },
     _onUpdateItem: function(evt) {
       var qty = evt.target;
       var item = qty.closest(selectors.lineItem);
+      console.log(item);
       var total = item.querySelector(selectors.cartLineItemTotal);
-
       var itemObj = {
         index: item.dataset.cartItemIndex,
+        variantId: item.dataset.lineVariantId,
         key: item.dataset.lineItemKey,
-        quantity: qty.value
+        quantity: item.dataset.cartItemQuantity
       }
-
+      console.log(itemObj)
       var request = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json;'
         },
         body: JSON.stringify({
-          line: itemObj.index,
-          quantity: itemObj.quantity
+          itemObj: itemObj.index,
+          quantity: itemObj.quantity 
         })
       };
 
-      fetch(this.cartRoutes.cartChangeUrl + '.js', request)
+      fetch('/cart/update.js', request)
         .then(function(response) {
           return response.json();
         })
         .then(
           function(state) {
-            // total.innerHTML = 
-            // console.log(state);
-            // var update = this.getItem(key, state);
-            // console.log(item);
-            /**
-             * 1. Get updated item
-             * 2. Update item total
-             * 2. Update cart subtotal
-             * 3. Update bubble count
-             */
             var updatedItem = this.getItem(itemObj.key, state);
             console.log(state);
             total.innerHTML = theme.Currency.formatMoney(

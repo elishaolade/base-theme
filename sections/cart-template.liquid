@@ -15,6 +15,7 @@
                     {% for item in cart.items %}
                         <tr class="line-item" 
                             data-cart-item 
+                            data-line-variant-id="{{ item.variant_id }}"
                             data-line-item-key="{{ item.key }}" 
                             data-cart-item-url="{{ item.url }}" 
                             data-cart-item-title="{{ item.title }}" 
@@ -31,9 +32,9 @@
                                         </h6>
                                         <button class="line-item__remove single__remove no-type" type="button" data-cart-remove>remove</button>
                                         <div class="line-item__hidden-qty-price" data-line-item-product>
-                                            <div>
+                                            <div class="line-item__hidden-inner">
                                                 <label for="qty-input">Qty</label>
-                                                <input id="qty-input" class="line-item__qty-input" value="{{ item.quantity }}" min="1" pattern="[0-9]" data-quantity-input data-quantity-item="{{ forloop.index }}/>
+                                                <input type="number" id="qty-input" class="line-item__qty-input" value="{{ item.quantity }}" min="1" pattern="[0-9]" data-quantity-input data-quantity-item="{{ forloop.index }}"/>
                                             </div>
                                             <span class="line-item__sm-price" data-sm-price>{{ item.line_price | money }}</span>
                                         </div>

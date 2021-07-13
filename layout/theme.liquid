@@ -25,6 +25,7 @@
   <main role="main">
     {{ content_for_layout }}
   </main>
+  {% section 'footer'%}
   <script src="{{ 'ls.rias.min.js'| asset_url }}"></script> 
   <script src="{{ 'lazysizes.js' | asset_url }}"></script>
   {% if template == 'product' %}
